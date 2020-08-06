@@ -41,7 +41,7 @@ func Register(c *gin.Context) {
 	//创建用户
 	hasedPassword,err := bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost)
 	if err != nil{
-		c.JSON(http.StatusUnprocessableEntity,gin.H{"code":500,"msg":"加密错误"})
+		c.JSON(http.StatusInternalServerError,gin.H{"code":500,"msg":"加密错误"})
 		return
 	}
 	newUser := model.User{
@@ -82,16 +82,22 @@ func Loginer(c *gin.Context)  {
 	}
 	//判断密码是否正确
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password),[]byte(password));err != nil{
-		c.JSON(http.StatusUnprocessableEntity,gin.H{"code":400,"msg":"密码错误"})
+		c.JSON(http.StatusBadRequest,gin.H{"code":400,"msg":"密码错误"})
 		return
 	}
 	//发放token
-	token := "111"
+	token,err := common.ReleaseToken(user)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError,gin.H{"code":500,"msg":"系统异常"})
+		log.Printf("token generate error: %v",err)
+		return
+	}
+
 	//返回结果
 	c.JSON(200,gin.H{
 		"code":200,
 		"data":gin.H{"token":token},
-		"msg":"注册成功",
+		"msg":"登陆成功",
 	})
 }
 
