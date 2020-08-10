@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
@@ -69,17 +68,20 @@ func Register(c *gin.Context) {
 func Loginer(c *gin.Context)  {
 	db := common.GetDB()
 	//获取参数
-	telephone := c.PostForm("telephone")
-	password := c.PostForm("password")
+	var requestUser = model.User{}
+	//json.NewDecoder(c.Request.Body).Decode(&requestUser)
+	c.Bind(&requestUser)
+	telephone := requestUser.Telephone
+	password := requestUser.Password
 	//数据验证
 	if len(telephone) != 11 {
-		fmt.Println("telephone",telephone)
-		fmt.Println(len(telephone))
-		c.JSON(http.StatusUnprocessableEntity,gin.H{"code":422,"msg":"手机号必须为11位"})
+		//fmt.Println("telephone",telephone)
+		//fmt.Println(len(telephone))
+		response.Response(c,http.StatusUnprocessableEntity,422,nil,"手机号必须为11位")
 		return
 	}
 	if len(password) <6{
-		c.JSON(http.StatusUnprocessableEntity,gin.H{"code":422,"msg":"密码不少于6位"})
+		response.Response(c,http.StatusUnprocessableEntity,422,nil,"密码不少于6位")
 		return
 	}
 	//判断手机号是否存在

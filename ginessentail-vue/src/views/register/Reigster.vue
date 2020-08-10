@@ -55,9 +55,7 @@ import { required, minLength } from 'vuelidate/lib/validators';
 
 import customValidator from '@/helper/validator';
 
-import storageService from '@/service/storageService';
-
-import userService from '@/service/userService';
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -84,6 +82,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('userModule', { userRegister: 'register' }),
     validateState(name) {
       const { $dirty, $error } = this.$v.user[name];
       return $dirty ? !$error : null;
@@ -94,18 +93,14 @@ export default {
       if (this.$v.user.$anyError) {
         return;
       }
-      console.log('register');
       // 请求API
-      // const api = 'http://localhost:1060/api/auth/register';
-      userService.register(this.user).then((res) => {
-        // 保存token
-        storageService.set(storageService.USER_TOKEN, res.data.data.token);
-        // 跳转到主页
+      this.userRegister(this.user).then(() => {
+        // 跳转主页
         this.$router.replace({ name: 'Home' });
       }).catch((err) => {
         this.$bvToast.toast(err.response.data.msg, {
           title: '数据验证错误',
-          variant: 'danger',
+          variant: 'danget',
           solid: true,
         });
       });
