@@ -29,6 +29,7 @@ func (c CategoryController) Create(ctx *gin.Context) {
 	var requestCategory vo.CreateCategoryRequest
 	if err := ctx.ShouldBind(&requestCategory);err != nil {
 		response.Fail(ctx,nil,"数据验证错误，分类名称必须填写")
+		return
 	}
 
 	updateCategory, err := c.Repository.SelectByName(requestCategory.Name)

@@ -16,12 +16,16 @@ import (
 func Register(c *gin.Context) {
 	db := common.GetDB()
 	//获取参数
-	var requestUser = model.User{}
+	//var requestUser = model.User{}
 	//json.NewDecoder(c.Request.Body).Decode(&requestUser)
-	c.Bind(&requestUser)
-	name := requestUser.Name
-	telephone := requestUser.Telephone
-	password := requestUser.Password
+	//c.Bind(&requestUser)
+	//name := requestUser.Name
+	//telephone := requestUser.Telephone
+	//password := requestUser.Password
+
+	name := c.PostForm("name")
+	telephone := c.PostForm("telephone")
+	password := c.PostForm("password")
 	//数据验证
 	if len(telephone) != 11 {
 		//fmt.Println("telephone",telephone)
@@ -68,11 +72,9 @@ func Register(c *gin.Context) {
 func Loginer(c *gin.Context)  {
 	db := common.GetDB()
 	//获取参数
-	var requestUser = model.User{}
 	//json.NewDecoder(c.Request.Body).Decode(&requestUser)
-	c.Bind(&requestUser)
-	telephone := requestUser.Telephone
-	password := requestUser.Password
+	telephone := c.PostForm("telephone")
+	password := c.PostForm("password")
 	//数据验证
 	if len(telephone) != 11 {
 		//fmt.Println("telephone",telephone)
