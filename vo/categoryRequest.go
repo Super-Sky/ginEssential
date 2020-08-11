@@ -1,5 +1,5 @@
 package vo
 
 type CreateCategoryRequest struct {
-	Name string
+	Name string `json:"name" binding:"required"`
 }
